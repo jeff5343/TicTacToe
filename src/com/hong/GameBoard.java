@@ -67,19 +67,9 @@ public class GameBoard {
 
     private SpotState getEqualRow() {
         for(int i=0; i<spots.length; i++) {
-            SpotState firstState = sA[0];
-            if(firstState == SpotState.NONE) {
-                continue;
-            }
-            for(int i=0; i<sA.length; i++) {
-                if(sA[i] == firstState) {
-                    if(i==sA.length-1) {
-                        return firstState;
-                    }
-                    continue;
-                }
-                break;
-                SpotState spot = getSpotArrayEquals(getRow())
+            SpotState spot = getSpotArrayEquals(getRow(i));
+            if(spot!=SpotState.NONE) {
+                return spot;
             }
         }
         return SpotState.NONE;
@@ -124,10 +114,13 @@ public class GameBoard {
                 diagonal[i] = spots[i][i];
             }
         } else if(number==2) {
-            for(int i=Constants.widthAndHeight-1; i>0; i--) {
-                diagonal[i] = spots[i][i];
+            int j=Constants.widthAndHeight-1;
+            for(int i=0; i<Constants.widthAndHeight; i++) {
+                diagonal[i] = spots[i][j];
+                j--;
             }
         } else {
+            System.out.println("getDiagonal: no numbers 1-2 inputted!");
             Arrays.fill(diagonal, SpotState.NONE);
         }
         return diagonal;
@@ -136,11 +129,15 @@ public class GameBoard {
     private SpotState getSpotArrayEquals(SpotState[] spotStates) {
         SpotState firstState = spotStates[0];
         for(int j=0; j<spotStates.length; j++) {
-            if(j==Constants.widthAndHeight-1) {
-                return firstState;
+            if(firstState == spotStates[j]) {
+                if(j==Constants.widthAndHeight-1) {
+                    return firstState;
+                }
+                continue;
             }
+            break;
         }
-        return firstState;
+        return SpotState.NONE;
     }
 
     private void printRow(SpotState[] sA) {
