@@ -65,6 +65,16 @@ public class GameBoard {
                 equalDiagonal : equalColumn) : equalRow;
     }
 
+    /**
+     * @return
+     * returns xy coordinate of blocking spot
+     * returns null if no spots are found
+     */
+    public int[] getBlockSpotCoordinate() {
+        int[] xy = new int[2];
+
+    }
+
     private SpotState getEqualRow() {
         for(int i=0; i<spots.length; i++) {
             SpotState spot = getSpotArrayEquals(getRow(i));
@@ -138,6 +148,33 @@ public class GameBoard {
             break;
         }
         return SpotState.NONE;
+    }
+
+    private int findMissingSpots() {
+        for(int i=0; i<Constants.widthAndHeight; i++) {
+            int r = getMissingSpotOfArray(getRow(i), SpotState.O);
+            int c = getMissingSpotOfArray(getColumn(i), SpotState.O);
+            int d = getMissingSpotOfArray(getDiagonal(i), SpotState.O);
+            if(r!=-1) {
+                return r;
+            }
+        }
+    }
+
+    /**
+     * @return returns -1 if there is no missing spot
+     */
+    private int getMissingSpotOfArray(SpotState[] spots, SpotState spot) {
+        int numberOfSpots = 0;
+        int missingSpot=0;
+        for(int i=0; i<spots.length; i++) {
+            if(spots[i] == spot) {
+                numberOfSpots++;
+                continue;
+            }
+            missingSpot=i;
+        }
+        return (numberOfSpots==Constants.widthAndHeight-2) ? missingSpot : -1;
     }
 
     private void printRow(SpotState[] sA) {
