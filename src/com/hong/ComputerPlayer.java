@@ -9,12 +9,17 @@ public class ComputerPlayer {
     }
 
     public void start() {
+        int[] blockXy = gameBoard.getBlockSpotCoordinate();
         int[] xy = gameBoard.getRandomUnoccupiedSpot();
-        if(gameBoard.getSpotOccupied(xy[0],xy[1])) {
+
+        if(blockXy != null) {
+            gameBoard.changeSpot(blockXy[0], blockXy[1], SpotState.X);
+        } else if(gameBoard.getSpotOccupied(xy[0],xy[1])) {
             start();
             return;
+        } else {
+            gameBoard.changeSpot(xy[0], xy[1], SpotState.X);
         }
-        gameBoard.changeSpot(xy[0], xy[1], SpotState.X);
 
         GameController.gameController.startNextTurn();
     }

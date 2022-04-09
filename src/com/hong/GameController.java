@@ -41,15 +41,15 @@ public class GameController {
 
     private void runTurnStateMachine() {
         switch (turnState) {
-            case PLAYER -> {
+            case PLAYER:
                 turnState = TurnState.COMPUTER;
                 computer.start();
-            }
-            case COMPUTER -> {
+                break;
+            case COMPUTER:
                 turnState = TurnState.PLAYER;
                 gameBoard.displayBoard();
                 player.start();
-            }
+                break;
         }
     }
 
