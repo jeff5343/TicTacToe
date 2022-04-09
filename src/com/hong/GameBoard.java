@@ -3,6 +3,8 @@ package com.hong;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import javax.sound.sampled.SourceDataLine;
+
 public class GameBoard {
 
     private final SpotState[][] spots =
@@ -77,17 +79,19 @@ public class GameBoard {
      */
     public int[] getBlockSpotCoordinate() {
         HashMap<Lines,int[]> missingSpot = findMissingSpots();
-        if(!missingSpot.containsValue(new int[] {-1,-1})) {
+        int[] values = new int[] {-1,-1};
+        for(int[] i : missingSpot.values()) {
+            values = i;
+            break;
+        }
+        System.out.println(Arrays.toString(values));
+        if(Arrays.equals(values, new int[] {1, 1})) {
             Lines line = Lines.ROW;
             for(Lines l : missingSpot.keySet()) {
                 line = l;
                 break;
             }
-            int[] values = new int[] {-1,-1};
-            for(int[] i : missingSpot.values()) {
-                values = i;
-                break;
-            }
+            System.out.println(line);
             return getCoordinateOfLine(line, values);
         }
         return null;
@@ -175,15 +179,24 @@ public class GameBoard {
             int r = getMissingSpotOfArray(getRow(i), SpotState.O);
             int c = getMissingSpotOfArray(getColumn(i), SpotState.O);
             int d = getMissingSpotOfArray(getDiagonal(i), SpotState.O);
+            System.out.println("r: " + r);
+            System.out.println(Arrays.toString(getRow(i)));
+            System.out.println("c: " + c);
+            System.out.println(Arrays.toString(getColumn(i)));
+            System.out.println("d: " + d);
+            System.out.println(Arrays.toString(getDiagonal(i)));
             if(r!=-1) {
+                spot.remove(Lines.ROW);
                 spot.put(Lines.ROW, new int[] {i, r});
                 return spot;
             }
-            if(c!=1) {
+            if(c!=-1) {
+                spot.remove(Lines.ROW);
                 spot.put(Lines.COLUMN, new int[] {i, r});
                 return spot;
             }
-            if(d!=1) {
+            if(d!=-1) {
+                spot.remove(Lines.ROW);
                 spot.put(Lines.DIAGONAL, new int[] {i, d});
                 return spot;
             }
@@ -196,15 +209,28 @@ public class GameBoard {
      */
     private int getMissingSpotOfArray(SpotState[] spots, SpotState spot) {
         int numberOfSpots = 0;
+        int numberOfOppositeSpots = 0;
         int missingSpot=0;
         for(int i=0; i<spots.length; i++) {
             if(spots[i] == spot) {
                 numberOfSpots++;
                 continue;
             }
-            missingSpot=i;
+            if((spot==SpotState.X) ? spot==SpotState.O : spot==SpotState.X) {
+                numberOfOppositeSpots++;
+                continue;
+            }
+            if(spots[i] == SpotState.NONE) {
+                missingSpot=i;
+            }
         }
-        return (numberOfSpots==Constants.widthAndHeight-2) ? missingSpot : -1;
+        System.out.println(spot);
+        System.out.println(Arrays.toString(spots));
+        System.out.println("Number of spots: " + numberOfSpots);
+        System.out.println("Number of opposite spots: " + numberOfOppositeSpots);
+        System.out.println("Missing spot index: " + missingSpot);
+        System.out.println("Returning value: " + ((numberOfSpots==Constants.widthAndHeight-2) ? (numberOfOppositeSpots<1) ? missingSpot : -1 : -1));
+        return (numberOfSpots==Constants.widthAndHeight-2) ? (numberOfOppositeSpots<1) ? missingSpot : -1 : -1;
     }
 
     private int[] getCoordinateOfLine(Lines line, int[] number) {
