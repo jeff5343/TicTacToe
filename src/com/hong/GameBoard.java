@@ -3,8 +3,6 @@ package com.hong;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import javax.sound.sampled.SourceDataLine;
-
 public class GameBoard {
 
     private final SpotState[][] spots =
@@ -77,21 +75,19 @@ public class GameBoard {
      * returns xy coordinate of blocking spot
      * returns null if no spots are found
      */
-    public int[] getBlockSpotCoordinate() {
-        HashMap<Lines,int[]> missingSpot = findMissingSpots();
+    public int[] getBlockSpotCoordinate(SpotState findSpot) {
+        HashMap<Lines,int[]> missingSpot = findMissingSpots(findSpot);
         int[] values = new int[] {-1,-1};
         for(int[] i : missingSpot.values()) {
             values = i;
             break;
         }
-        System.out.println(Arrays.toString(values));
-        if(Arrays.equals(values, new int[] {1, 1})) {
+        if(!Arrays.equals(values, new int[] {-1, -1})) {
             Lines line = Lines.ROW;
             for(Lines l : missingSpot.keySet()) {
                 line = l;
                 break;
             }
-            System.out.println(line);
             return getCoordinateOfLine(line, values);
         }
         return null;
@@ -152,7 +148,6 @@ public class GameBoard {
                 j--;
             }
         } else {
-            System.out.println("getDiagonal: no numbers 1-2 inputted!");
             Arrays.fill(diagonal, SpotState.NONE);
         }
         return diagonal;
@@ -172,19 +167,13 @@ public class GameBoard {
         return SpotState.NONE;
     }
 
-    private HashMap<Lines, int[]> findMissingSpots() {
+    private HashMap<Lines, int[]> findMissingSpots(SpotState findSpot) {
         HashMap<Lines, int[]> spot = new HashMap<>();
         spot.put(Lines.ROW, new int[] {-1,-1});
         for(int i=0; i<Constants.widthAndHeight; i++) {
-            int r = getMissingSpotOfArray(getRow(i), SpotState.O);
-            int c = getMissingSpotOfArray(getColumn(i), SpotState.O);
-            int d = getMissingSpotOfArray(getDiagonal(i), SpotState.O);
-            System.out.println("r: " + r);
-            System.out.println(Arrays.toString(getRow(i)));
-            System.out.println("c: " + c);
-            System.out.println(Arrays.toString(getColumn(i)));
-            System.out.println("d: " + d);
-            System.out.println(Arrays.toString(getDiagonal(i)));
+            int r = getMissingSpotOfArray(getRow(i), findSpot);
+            int c = getMissingSpotOfArray(getColumn(i), findSpot);
+            int d = getMissingSpotOfArray(getDiagonal(i), findSpot);
             if(r!=-1) {
                 spot.remove(Lines.ROW);
                 spot.put(Lines.ROW, new int[] {i, r});
@@ -192,7 +181,7 @@ public class GameBoard {
             }
             if(c!=-1) {
                 spot.remove(Lines.ROW);
-                spot.put(Lines.COLUMN, new int[] {i, r});
+                spot.put(Lines.COLUMN, new int[] {i, c});
                 return spot;
             }
             if(d!=-1) {
@@ -216,7 +205,7 @@ public class GameBoard {
                 numberOfSpots++;
                 continue;
             }
-            if((spot==SpotState.X) ? spot==SpotState.O : spot==SpotState.X) {
+            if((spot==SpotState.X) ? spots[i]==SpotState.O : spots[i]==SpotState.X) {
                 numberOfOppositeSpots++;
                 continue;
             }
@@ -224,13 +213,7 @@ public class GameBoard {
                 missingSpot=i;
             }
         }
-        System.out.println(spot);
-        System.out.println(Arrays.toString(spots));
-        System.out.println("Number of spots: " + numberOfSpots);
-        System.out.println("Number of opposite spots: " + numberOfOppositeSpots);
-        System.out.println("Missing spot index: " + missingSpot);
-        System.out.println("Returning value: " + ((numberOfSpots==Constants.widthAndHeight-2) ? (numberOfOppositeSpots<1) ? missingSpot : -1 : -1));
-        return (numberOfSpots==Constants.widthAndHeight-2) ? (numberOfOppositeSpots<1) ? missingSpot : -1 : -1;
+        return ((numberOfSpots==Constants.widthAndHeight-1) ? (numberOfOppositeSpots<1) ? missingSpot : -1 : -1);
     }
 
     private int[] getCoordinateOfLine(Lines line, int[] number) {

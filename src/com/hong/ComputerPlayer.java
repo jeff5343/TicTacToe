@@ -1,5 +1,7 @@
 package com.hong;
 
+import java.util.Arrays;
+
 public class ComputerPlayer {
 
     private GameBoard gameBoard;
@@ -9,10 +11,15 @@ public class ComputerPlayer {
     }
 
     public void start() {
-        int[] blockXy = gameBoard.getBlockSpotCoordinate();
+        int[] scoreXy = gameBoard.getBlockSpotCoordinate(SpotState.X);
+        int[] blockXy = gameBoard.getBlockSpotCoordinate(SpotState.O);
         int[] xy = gameBoard.getRandomUnoccupiedSpot();
 
-        if(blockXy != null) {
+        System.out.println(Arrays.toString(blockXy));
+
+        if(scoreXy != null) {
+            gameBoard.changeSpot(scoreXy[0], scoreXy[1], SpotState.X);
+        } else if(blockXy != null) {
             gameBoard.changeSpot(blockXy[0], blockXy[1], SpotState.X);
         } else if(gameBoard.getSpotOccupied(xy[0],xy[1])) {
             start();

@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class PlayerInput {
 
     private final Scanner scanner = new Scanner(System.in);
-    private GameBoard gameBoard;
+    private final GameBoard gameBoard;
 
     private int selectedColumn;
     private int selectedRow;
