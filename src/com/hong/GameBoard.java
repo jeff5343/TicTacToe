@@ -21,7 +21,7 @@ public class GameBoard {
 
     public void displayBoard() {
         startNewLine();
-        System.out.println("    1.  2.  3.");
+        printNumOnColumns();
         for(int i=0; i< spots.length; i++) {
             printNumOnRow(i+1);
             printRow(spots[i]);
@@ -335,6 +335,14 @@ public class GameBoard {
         startNewLine();
         for(int i=0; i<times; i++) {
             System.out.print((i==0 ? "   ——" : "  ——"));
+        }
+        startNewLine();
+    }
+
+    private void printNumOnColumns() {
+        System.out.print("    ");
+        for(int i=0; i<Constants.widthAndHeight; i++) {
+            System.out.print(i+1+".  ");
         }
         startNewLine();
     }

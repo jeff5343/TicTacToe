@@ -24,19 +24,25 @@ public class GameController {
 
     public void startNextTurn() {
         if(gameBoard.getAllSpotsOccupied()) {
-            gameBoard.displayBoard();
-            System.out.println("\n Tie!");
+            runTieAction();
             return;
         }
-
-        SpotState spot = gameBoard.getMatchingSet();
-        if(spot!=SpotState.NONE) {
-            gameBoard.displayBoard();
-            System.out.println("\n" + spot.value + "wins!");
+        SpotState winner = gameBoard.getMatchingSet();
+        if(winner!=SpotState.NONE) {
+            runWinnerAction(winner);
             return;
         }
-
         runTurnStateMachine();
+    }
+
+    private void runTieAction() {
+        gameBoard.displayBoard();
+        System.out.println("\n Tie!");
+    }
+
+    private void runWinnerAction(SpotState winner) {
+        gameBoard.displayBoard();
+        System.out.println("\n" + winner.value + "wins!");
     }
 
     private void runTurnStateMachine() {
