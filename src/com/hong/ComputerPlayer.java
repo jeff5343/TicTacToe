@@ -21,10 +21,6 @@ public class ComputerPlayer {
         } else if (nextXy != null) {
             gameBoard.changeSpot(nextXy[0], nextXy[1], Constants.computerSpot);
         } else {
-            if(gameBoard.getSpotOccupied(xy[0], xy[1])) {
-                start();
-                return;
-            }
             gameBoard.changeSpot(xy[0], xy[1], Constants.computerSpot);
         }
 

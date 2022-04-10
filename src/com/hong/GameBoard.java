@@ -21,6 +21,7 @@ public class GameBoard {
 
     public void displayBoard() {
         startNewLine();
+        System.out.println("    1.  2.  3.");
         for(int i=0; i< spots.length; i++) {
             printNumOnRow(i+1);
             printRow(spots[i]);
@@ -39,7 +40,11 @@ public class GameBoard {
      * @return row and column values in an array
      */
     public int[] getRandomSpot() {
-        return new int[] {getRandomNumber(), getRandomNumber()};
+        int[] randomSpot =  new int[] {getRandomNumber(), getRandomNumber()};
+        if(getSpotOccupied(randomSpot[0], randomSpot[1])) {
+            return getRandomSpot();
+        }
+        return randomSpot;
     }
 
     public boolean getAllSpotsOccupied() {
@@ -245,21 +250,31 @@ public class GameBoard {
      * returns -1 if there is no next spots available
      */
     private int getNextSpotOfArray(SpotState[] spots, SpotState findSpot) {
+        SpotState oppositeSpot = (findSpot==SpotState.X) ? SpotState.O : SpotState.X;
         for(int i=0; i<spots.length; i++) {
             if(spots[i] == findSpot) {
-                if(i<spots.length-1) {
-                    if(spots[i+1] == SpotState.NONE) {
+                if(i<spots.length-1 && !getSpotArrayHasSpot(spots, oppositeSpot)) {
+                    if(spots[i+1]==SpotState.NONE) {
                         return i+1;
                     }
                 }
-                if(i>0) {
-                    if(spots[i-1] == SpotState.NONE) {
+                if(i>0 && !getSpotArrayHasSpot(spots, oppositeSpot)) {
+                    if(spots[i-1]==SpotState.NONE) {
                         return i-1;
                     }
                 }
             }
         }
         return -1;
+    }
+
+    private boolean getSpotArrayHasSpot(SpotState[] spots, SpotState spot) {
+        for(SpotState s : spots) {
+            if(s==spot) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int[] getCoordinateOfLine(Lines line, int[] number) {

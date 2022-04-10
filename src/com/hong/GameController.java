@@ -25,7 +25,7 @@ public class GameController {
     public void startNextTurn() {
         if(gameBoard.getAllSpotsOccupied()) {
             gameBoard.displayBoard();
-            System.out.println("Tie!");
+            System.out.println("\n Tie!");
             return;
         }
 
