@@ -7,11 +7,11 @@ public class GameController {
     private final PlayerInput player = new PlayerInput(gameBoard);
     private final ComputerPlayer computer = new ComputerPlayer(gameBoard);
 
-    private TurnState turnState = TurnState.PLAYER;
     private enum TurnState {
         PLAYER,
         COMPUTER
     }
+    private TurnState turnState = TurnState.PLAYER;
 
     public void init() {
         gameController = this;

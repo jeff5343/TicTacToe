@@ -62,7 +62,7 @@ public class PlayerInput {
             start();
             return;
         }
-        gameBoard.changeSpot(selectedRow,selectedColumn,SpotState.O);
+        gameBoard.changeSpot(selectedRow,selectedColumn, Constants.playerSpot);
 
         GameController.gameController.startNextTurn();
     }
