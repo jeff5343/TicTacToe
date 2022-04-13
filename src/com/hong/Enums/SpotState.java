@@ -1,4 +1,4 @@
-package com.hong;
+package com.hong.Enums;
 
 public enum SpotState {
     NONE("   "),

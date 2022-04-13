@@ -1,5 +1,7 @@
 package com.hong;
 
+import com.hong.Enums.SpotState;
+
 public class GameController {
 
     public static GameController gameController;

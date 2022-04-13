@@ -3,15 +3,14 @@ package com.hong;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import com.hong.Enums.LineType;
+import com.hong.Enums.SpotState;
+
 public class GameBoard {
 
     private final SpotState[][] spots =
             new SpotState[Constants.widthAndHeight]
                     [Constants.widthAndHeight];
-
-    public enum Lines {
-        ROW, COLUMN, DIAGONAL
-    }
 
     public void init() {
         for(SpotState[] sA : spots) {
@@ -78,10 +77,10 @@ public class GameBoard {
      * returns null if no spots are found
      */
     public int[] getBlockSpotCoordinate(SpotState findSpot) {
-        HashMap<Lines,int[]> missingSpot = findMissingSpot(findSpot);
+        HashMap<LineType,int[]> missingSpot = findMissingSpot(findSpot);
         int[] values = getIntArrayValueOfHashMap(missingSpot);
         if(!Arrays.equals(values, new int[] {-1, -1})) {
-            Lines line = getLineKeyOfHashMap(missingSpot);
+            LineType line = getLineKeyOfHashMap(missingSpot);
             return getCoordinateOfLine(line, values);
         }
         return null;
@@ -92,11 +91,30 @@ public class GameBoard {
      * returns xy coordinate of next spot,
      * returns null if no spots are found
      */
-    public int[] getNextSpotCoordinate(SpotState findSpot) {
-        HashMap<Lines,int[]> nextSpot = findNextSpot(findSpot);
+    public int[] getNextSpotCoordinate(SpotState findSpot, ComputerPlayer player) {
+        HashMap<LineType,int[]> nextSpot = findNextSpot(findSpot, null);
         int[] values = getIntArrayValueOfHashMap(nextSpot);
         if(!Arrays.equals(values, new int[] {-1, -1})) {
-            Lines line = getLineKeyOfHashMap(nextSpot);
+            LineType line = getLineKeyOfHashMap(nextSpot);
+            player.setCurrentLineType(line);
+            return getCoordinateOfLine(line, values);
+        }
+        return null;
+    }
+
+    /**
+     * @return
+     * returns xy coordinate of next spot,
+     * returns null if no spots are found
+     */
+    public int[] getNextSpotCoordinateWithLine(SpotState findSpot, LineType lineToFollow) {
+        if(lineToFollow==null) {
+            return null;
+        }
+        HashMap<LineType,int[]> nextSpot = findNextSpot(findSpot, lineToFollow);
+        int[] values = getIntArrayValueOfHashMap(nextSpot);
+        if(!Arrays.equals(values, new int[] {-1, -1})) {
+            LineType line = getLineKeyOfHashMap(nextSpot);
             return getCoordinateOfLine(line, values);
         }
         return null;
@@ -176,26 +194,26 @@ public class GameBoard {
         return SpotState.NONE;
     }
 
-    private HashMap<Lines, int[]> findMissingSpot(SpotState findSpot) {
-        HashMap<Lines, int[]> spot = new HashMap<>();
+    private HashMap<LineType, int[]> findMissingSpot(SpotState findSpot) {
+        HashMap<LineType, int[]> spot = new HashMap<>();
         for(int i=0; i<Constants.widthAndHeight; i++) {
             int r = getMissingSpotOfArray(getRow(i), findSpot);
             int c = getMissingSpotOfArray(getColumn(i), findSpot);
             int d = getMissingSpotOfArray(getDiagonal(i), findSpot);
             if(r!=-1) {
-                spot.put(Lines.ROW, new int[] {i, r});
+                spot.put(LineType.ROW, new int[] {i, r});
                 return spot;
             }
             if(c!=-1) {
-                spot.put(Lines.COLUMN, new int[] {i, c});
+                spot.put(LineType.COLUMN, new int[] {i, c});
                 return spot;
             }
             if(d!=-1) {
-                spot.put(Lines.DIAGONAL, new int[] {i, d});
+                spot.put(LineType.DIAGONAL, new int[] {i, d});
                 return spot;
             }
         }
-        spot.put(Lines.ROW, new int[] {-1,-1});
+        spot.put(LineType.ROW, new int[] {-1,-1});
         return spot;
     }
 
@@ -222,26 +240,26 @@ public class GameBoard {
         return ((numberOfSpots==Constants.widthAndHeight-1) ? (numberOfOppositeSpots<1) ? missingSpot : -1 : -1);
     }
 
-    private HashMap<Lines, int[]> findNextSpot(SpotState findSpot) {
-        HashMap<Lines, int[]> spot = new HashMap<>();
+    private HashMap<LineType, int[]> findNextSpot(SpotState findSpot, LineType lineType) {
+        HashMap<LineType, int[]> spot = new HashMap<>();
         for(int i=0; i<Constants.widthAndHeight; i++) {
             int r = getNextSpotOfArray(getRow(i), findSpot);
             int c = getNextSpotOfArray(getColumn(i), findSpot);
             int d = getNextSpotOfArray(getDiagonal(i), findSpot);
-            if(r!=-1) {
-                spot.put(Lines.ROW, new int[] {i, r});
+            if(r!=-1 && (lineType==null || lineType==LineType.ROW)) {
+                spot.put(LineType.ROW, new int[] {i, r});
                 return spot;
             }
-            if(c!=-1) {
-                spot.put(Lines.COLUMN, new int[] {i, c});
+            if(c!=-1 && (lineType==null || lineType==LineType.COLUMN)) {
+                spot.put(LineType.COLUMN, new int[] {i, c});
                 return spot;
             }
-            if(d!=-1) {
-                spot.put(Lines.DIAGONAL, new int[] {i, d});
+            if(d!=-1 && (lineType==null || lineType==LineType.DIAGONAL)) {
+                spot.put(LineType.DIAGONAL, new int[] {i, d});
                 return spot;
             }
         }
-        spot.put(Lines.ROW, new int[] {-1,-1});
+        spot.put(LineType.ROW, new int[] {-1,-1});
         return spot;
     }
 
@@ -277,10 +295,10 @@ public class GameBoard {
         return false;
     }
 
-    private int[] getCoordinateOfLine(Lines line, int[] number) {
-        if(line == Lines.ROW) {
+    private int[] getCoordinateOfLine(LineType line, int[] number) {
+        if(line == LineType.ROW) {
             return number;
-        } else if(line == Lines.COLUMN) {
+        } else if(line == LineType.COLUMN) {
             return getCoordinateOfColumn(number);
         } else {
             return getCoordinateOfDiagonal(number);
@@ -310,18 +328,18 @@ public class GameBoard {
         return new int[] {-1,-1};
     }
 
-    private int[] getIntArrayValueOfHashMap(HashMap<Lines,int[]> map) {
+    private int[] getIntArrayValueOfHashMap(HashMap<LineType,int[]> map) {
         for(int[] i : map.values()) {
             return i;
         }
         return new int[] {-1, -1};
     }
 
-    private Lines getLineKeyOfHashMap(HashMap<Lines,int[]> map) {
-        for(Lines l : map.keySet()) {
+    private LineType getLineKeyOfHashMap(HashMap<LineType,int[]> map) {
+        for(LineType l : map.keySet()) {
             return l;
         }
-        return Lines.ROW;
+        return LineType.ROW;
     }
 
     private void printRow(SpotState[] sA) {
