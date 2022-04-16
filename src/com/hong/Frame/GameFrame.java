@@ -12,10 +12,13 @@ import java.awt.event.ActionListener;
 public class GameFrame extends JFrame implements ActionListener {
 
     private final int width = 400;
-    private final int height = 400;
+    private final int height = 450;
 
     private GameBoard gameBoard;
-    private SpotButton[][] spotButtons = new SpotButton[3][3];
+    private JPanel ticTacToePanel;
+    private JPanel labelPanel;
+    private SpotButton[][] spotButtons = new SpotButton[Constants.widthAndHeight][Constants.widthAndHeight];
+    private JLabel label;
 
     public GameFrame(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
@@ -24,12 +27,12 @@ public class GameFrame extends JFrame implements ActionListener {
         this.setTitle("Tic Tac Toe");
         this.setSize(width, height);
         this.setLocationRelativeTo(null);
-        this.setLayout(new GridLayout(3,3,20,20));
+        this.setLayout(new BorderLayout());
 
-        setUpSpotButtons();
+        setUpTicTacToePanel();
+        setUpLabelPanel();
 
         this.setVisible(true);
-
     }
 
     public void disableButtons() {
@@ -48,16 +51,37 @@ public class GameFrame extends JFrame implements ActionListener {
         }
     }
 
-    private void setUpSpotButtons() {
+    public void changeBottomLabel(String text) {
+        label.setText(text);
+    }
+
+    private void setUpTicTacToePanel() {
+        ticTacToePanel = new JPanel();
+        ticTacToePanel.setLayout(new GridLayout(Constants.widthAndHeight,Constants.widthAndHeight,20,20));
+
         for(int i=0; i<spotButtons.length; i++) {
             for(int j=0; j<spotButtons[i].length; j++) {
                 spotButtons[i][j] = new SpotButton();
                 spotButtons[i][j].addActionListener(this);
-                this.add(spotButtons[i][j]);
+                ticTacToePanel.add(spotButtons[i][j]);
             }
         }
+
+        this.add(ticTacToePanel, BorderLayout.CENTER);
     }
 
+    private void setUpLabelPanel() {
+        labelPanel = new JPanel();
+        labelPanel.setPreferredSize(new Dimension(100, 50));
+        
+        label = new JLabel(" ");
+        label.setFont(new Font("Console", Font.PLAIN, 20));
+        label.setVerticalTextPosition(JLabel.CENTER);
+        label.setHorizontalTextPosition(JLabel.CENTER);
+        labelPanel.add(label);
+
+        this.add(labelPanel, BorderLayout.SOUTH);
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

@@ -9,6 +9,6 @@ public class SpotButton extends JButton {
 
     public SpotButton() {
         this.setFocusable(false);
-        this.setFont(new Font("Console", Font.BOLD, 20));
+        this.setFont(new Font("Console", Font.BOLD, 15));
     }
 }

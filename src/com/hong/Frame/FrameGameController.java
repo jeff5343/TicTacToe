@@ -10,7 +10,6 @@ public class FrameGameController {
 
     public static FrameGameController frameGameController;
     private final GameBoard gameBoard = new GameBoard();
-    private final PlayerInput player = new PlayerInput(gameBoard);
     private final ComputerPlayer computer = new ComputerPlayer(gameBoard);
     private final GameFrame gameFrame = new GameFrame(gameBoard);
 
@@ -36,12 +35,13 @@ public class FrameGameController {
     }
 
     private void runTieAction() {
-        System.out.println("\n Tie!");
+        gameFrame.changeBottomLabel("Tie!");
         gameFrame.disableButtons();
     }
 
     private void runWinnerAction(SpotState winner) {
-        System.out.println("\n" + winner.value + "wins!");
+        gameFrame.changeBottomLabel(winner.value + "wins!");
+        gameFrame.changeButtonTexts(gameBoard.getSpots());
         gameFrame.disableButtons();
     }
 
