@@ -1,5 +1,6 @@
 package com.hong.Frame;
 
+import com.hong.Constants;
 import com.hong.GameBoard;
 
 import javax.swing.*;
@@ -9,6 +10,6 @@ public class SpotButton extends JButton {
 
     public SpotButton() {
         this.setFocusable(false);
-        this.setFont(new Font("Console", Font.BOLD, 15));
+        this.setFont(new Font("Console", Font.BOLD, 15-Constants.widthAndHeight));
     }
 }
