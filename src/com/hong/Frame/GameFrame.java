@@ -75,7 +75,7 @@ public class GameFrame extends JFrame implements ActionListener {
         labelPanel.setPreferredSize(new Dimension(100, 50));
         
         label = new JLabel(" ");
-        label.setFont(new Font("Console", Font.PLAIN, 20));
+        label.setFont(new Font("Console", Font.PLAIN, 15));
         label.setVerticalTextPosition(JLabel.CENTER);
         label.setHorizontalTextPosition(JLabel.CENTER);
         labelPanel.add(label);
