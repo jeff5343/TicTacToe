@@ -1,6 +1,7 @@
 package com.hong;
 
 import com.hong.Enums.LineType;
+import com.hong.Frame.FrameGameController;
 
 public class ComputerPlayer {
 
@@ -30,7 +31,8 @@ public class ComputerPlayer {
             gameBoard.changeSpot(xy[0], xy[1], Constants.computerSpot);
         }
 
-        GameController.gameController.startNextTurn();
+        // GameController.gameController.startNextTurn();
+        FrameGameController.frameGameController.startNextTurn();
     }
 
     public void setCurrentLineType(LineType type) {

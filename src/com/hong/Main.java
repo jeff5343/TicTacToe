@@ -1,15 +1,17 @@
 package com.hong;
 
-import com.hong.Frame.Frame;
+import com.hong.Frame.FrameGameController;
+import com.hong.Frame.GameFrame;
 
 public class Main {
 
     public static void main(String[] args) {
 
-    	GameController gameController = new GameController();
-    	gameController.init();
+        FrameGameController frameGameController = new FrameGameController();
+        frameGameController.init();
 
-        Frame frame = new Frame();
+//    	GameController gameController = new GameController();
+//    	gameController.init();
 
     }
 }

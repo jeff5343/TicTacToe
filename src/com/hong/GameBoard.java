@@ -35,6 +35,10 @@ public class GameBoard {
         spots[row][column] = state;
     }
 
+    public SpotState[][] getSpots() {
+        return spots;
+    }
+
     /**
      * @return row and column values in an array
      */
